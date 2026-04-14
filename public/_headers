@@ -1,0 +1,37 @@
+/*
+  Cloudflare Pages — Edge Cache + Security Headers
+*/
+
+# HTML: revalidate on every deploy
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Hashed assets: cache forever
+/_assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fonts
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# Images
+/images/*
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# Favicon
+/favicon.*
+  Cache-Control: public, max-age=86400
+
+# Security headers (all routes)
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://cdn.simpleicons.org https:; connect-src 'self'; frame-ancestors 'none';

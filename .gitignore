@@ -1,0 +1,71 @@
+# ─── Build Outputs ───────────────────────────────────────
+dist/
+.output/
+.vercel/
+.netlify/
+
+# ─── Astro Cache ─────────────────────────────────────────
+.astro/
+
+# ─── Dependencies ────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+
+# ─── Environment & Secrets ───────────────────────────────
+# NEVER commit these — contains API keys, tokens, secrets
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+
+# ─── Cloudflare ──────────────────────────────────────────
+.wrangler/
+wrangler.toml
+
+# ─── OS Artifacts ────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ─── Editor & IDE ────────────────────────────────────────
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+.netrwhist
+
+# ─── TypeScript ──────────────────────────────────────────
+*.tsbuildinfo
+
+# ─── Logs ────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+
+# ─── Optional Lock Files ─────────────────────────────────
+# Uncomment one line to commit only one lockfile type
+# yarn.lock
+# pnpm-lock.yaml
+
+# ─── Misc ────────────────────────────────────────────────
+*.local
+.cache/
+tmp/
+temp/

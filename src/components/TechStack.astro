@@ -1,0 +1,240 @@
+---
+// TechStack.astro — Icon Marquee with official simple-icons + skills grid.
+// Full screen width marquees, infinite arrays, scroll animations.
+
+const CDN = 'https://cdn.simpleicons.org';
+
+const ROW1 = [
+  { name: 'Rust',         slug: 'rust'         },
+  { name: 'TypeScript',   slug: 'typescript'   },
+  { name: 'JavaScript',   slug: 'javascript'   },
+  { name: 'Python',       slug: 'python'       },
+  { name: 'C++',          slug: 'cplusplus'    },
+  { name: 'C',            slug: 'c'            },
+  { name: 'Java',         slug: 'java'         },
+  { name: 'Go',           slug: 'go'           },
+  { name: 'Racket',       slug: 'racket'       }, /* Assumed or falls back beautifully */
+  { name: 'SQL',          slug: 'postgresql'   },
+  { name: 'HTML5',        slug: 'html5'        },
+  { name: 'CSS3',         slug: 'css3'         },
+  { name: 'React',        slug: 'react'        },
+  { name: 'Astro',        slug: 'astro'        },
+  { name: 'Next.js',      slug: 'nextdotjs'    },
+  { name: 'Svelte',       slug: 'svelte'       },
+];
+
+const ROW2 = [
+  { name: 'Vue.js',          slug: 'vuedotjs'       },
+  { name: 'FastAPI',         slug: 'fastapi'        },
+  { name: 'Tauri',           slug: 'tauri'          },
+  { name: 'Docker',          slug: 'docker'         },
+  { name: 'Kubernetes',      slug: 'kubernetes'     },
+  { name: 'GitHub Actions',  slug: 'githubactions'  },
+  { name: 'Cloudflare',      slug: 'cloudflare'     },
+  { name: 'Arch Linux',      slug: 'archlinux'      },
+  { name: 'Neovim',          slug: 'neovim'         },
+  { name: 'Git',             slug: 'git'            },
+  { name: 'Nginx',           slug: 'nginx'          },
+  { name: 'Terraform',       slug: 'terraform'      },
+  { name: 'Linux',           slug: 'linux'          },
+  { name: 'Node.js',         slug: 'nodedotjs'      },
+  { name: 'Tailwind',        slug: 'tailwindcss'    },
+];
+
+/* Duplicate enough times to ensure it covers even ultrawide screens infinitely */
+const INFINITE_ROW1 = [...ROW1, ...ROW1, ...ROW1, ...ROW1, ...ROW1];
+const INFINITE_ROW2 = [...ROW2, ...ROW2, ...ROW2, ...ROW2, ...ROW2];
+
+// Extra featured chips (bento labels under marquee — text + category)
+const CATEGORIES = [
+  { label: 'Languages',       items: ['Rust', 'Python', 'TypeScript', 'JS', 'C++', 'C', 'Java', 'Go', 'Racket', 'Scheme', 'SQL', 'HTML/CSS'], color: '#3b82f6' },
+  { label: 'Frameworks',      items: ['Astro', 'React', 'Next.js', 'Vue', 'Svelte', 'FastAPI', 'Tauri', 'Tailwind'], color: '#8b5cf6' },
+  { label: 'Infrastructure',  items: ['Docker', 'Kubernetes', 'GitHub CI/CD', 'Cloudflare', 'Nginx', 'Terraform'],  color: '#38bdf8' },
+  { label: 'AI & Cognitive',  items: ['Multi-Agent Orchestration', 'LLM Chaining', 'LangChain', 'Pinecone', 'ChromaDB', 'Prompt Eng.'], color: '#a78bfa' },
+  { label: 'Universal Tools', items: ['Git', 'Arch Linux', 'Neovim', 'cURL', 'Bash/Zsh', 'SSH', 'JWT', 'Lighthouse', 'Obsidian'], color: '#34d399' },
+];
+---
+
+<section
+  id="stack"
+  aria-labelledby="stack-heading"
+  style="
+    padding: 6rem 0 7rem;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  "
+>
+  <!-- Background decorative grid/glow -->
+  <div aria-hidden="true" style="
+    position: absolute;
+    top: -30%;
+    left: 20%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,92,246,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  "></div>
+
+  <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1;">
+
+    <!-- Section header -->
+    <div data-reveal style="margin-bottom: 3.5rem;">
+      <p class="section-label" style="margin-bottom: 1rem;">Tech Ecosystem</p>
+      <h2
+        id="stack-heading"
+        style="
+          font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+          font-weight: 800;
+          letter-spacing: -0.04em;
+          color: #e2e8f0;
+          margin-bottom: 0.5rem;
+        "
+      >
+        The Full Stack
+      </h2>
+      <p style="color: #475569; font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; margin-bottom: 0.25rem;">
+        Skills and Tools
+      </p>
+      <p style="color: #334155; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+        // languages · frameworks · infrastructure · devops
+      </p>
+    </div>
+
+  </div>
+
+  <!-- ── FULL-WIDTH MARQUEE SECTION ──────────────────────────────── -->
+  <div style="position: relative; z-index: 1; width: 100vw; margin-left: calc(-50vw + 50%); margin-bottom: 1rem;">
+    <!-- ROW 1 (scrolls left) -->
+    <div class="marquee-outer" style="margin-bottom: 1rem;" aria-hidden="true">
+      <div class="marquee-track-l" style="gap: 1rem; padding: 0.5rem 0;">
+        {INFINITE_ROW1.map((item) => (
+          <div class="icon-chip transition-transform hover:scale-105" style="background: rgba(20,20,20,0.8); backdrop-filter: blur(4px);">
+            <img
+              src={`${CDN}/${item.slug}/ffffff`}
+              alt={item.name}
+              width="20"
+              height="20"
+              loading="lazy"
+              decoding="async"
+              onerror="this.style.display='none'"
+            />
+            <span style="font-size: 0.8rem;">{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- ROW 2 (scrolls right) -->
+    <div class="marquee-outer" aria-hidden="true">
+      <div class="marquee-track-r" style="gap: 1rem; padding: 0.5rem 0;">
+        {INFINITE_ROW2.map((item) => (
+          <div class="icon-chip transition-transform hover:scale-105" style="background: rgba(20,20,20,0.8); backdrop-filter: blur(4px); border-color: rgba(139,92,246,0.15);">
+            <img
+              src={`${CDN}/${item.slug}/ffffff`}
+              alt={item.name}
+              width="20"
+              height="20"
+              loading="lazy"
+              decoding="async"
+              onerror="this.style.display='none'"
+            />
+            <span style="font-size: 0.8rem;">{item.name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CATEGORY BREAKDOWN ─────────────────────────────────────── -->
+  <div style="max-width: 1280px; margin: 5rem auto 0; padding: 0 1.5rem; position: relative; z-index: 1;">
+
+    <div
+      style="
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 4px;
+        overflow: hidden;
+      "
+      id="cat-grid"
+    >
+      {CATEGORIES.map((cat, i) => (
+        <div
+          data-reveal
+          data-delay={String(i * 80)}
+          style={`
+            background: var(--card);
+            padding: 1.75rem 1.5rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          `}
+          class="cat-cell"
+        >
+          <div style={`
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+          `}>
+            <span
+              style={`
+                width: 8px; height: 8px;
+                border-radius: 50%;
+                background: ${cat.color};
+                flex-shrink: 0;
+                box-shadow: 0 0 8px ${cat.color}60;
+              `}
+              aria-hidden="true"
+            ></span>
+            <span style={`
+              font-family: 'JetBrains Mono', monospace;
+              font-size: 0.7rem;
+              font-weight: 700;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: ${cat.color};
+            `}>{cat.label}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            {cat.items.map(item => (
+              <span style="
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.8rem;
+                color: #94a3b8;
+                font-weight: 400;
+                transition: color 0.2s ease;
+              " class="cat-item">
+                <span style="color: #334155; margin-right: 0.375rem; transition: color 0.2s ease;" class="cat-arrow">›</span>{item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .cat-cell:hover {
+    background: var(--hover) !important;
+    transform: translateY(-2px);
+    z-index: 10;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+  }
+  .cat-cell:hover .cat-item {
+    color: #e2e8f0 !important;
+  }
+  .cat-cell:hover .cat-arrow {
+    color: var(--accent) !important;
+  }
+  @media (max-width: 640px) {
+    #cat-grid {
+      grid-template-columns: 1fr 1fr !important;
+    }
+  }
+</style>

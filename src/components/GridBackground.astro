@@ -1,0 +1,180 @@
+---
+// GridBackground.astro
+// A high-performance interactive grid. Draws a dense matrix of characters (+, ·) 
+// that illuminate dynamically around the cursor. 
+---
+
+<canvas
+  id="grid-canvas"
+  aria-hidden="true"
+  style="
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  "
+></canvas>
+
+<script is:inline>
+(function() {
+  const canvas = document.getElementById('grid-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d', { alpha: false }); // Optimization
+
+  let W, H;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const mouse = { x: -999, y: -999, rx: -999, ry: -999 };
+  const targetMouse = { x: -999, y: -999 };
+  
+  // Grid settings
+  const CELL_SIZE = 32;
+  const chars = ['+', '·', 'x', '1', '0']; // character set for glitches
+  let cols, rows;
+  let cells = [];
+  
+  // Throttle resizing
+  let resizeTimer;
+
+  function initGrid() {
+    cols = Math.ceil(W / CELL_SIZE);
+    rows = Math.ceil(H / CELL_SIZE);
+    cells = new Array(cols * rows);
+    
+    for (let i = 0; i < cells.length; i++) {
+      cells[i] = {
+        char: Math.random() > 0.85 ? '+' : '·', // Base character
+        glitchTime: 0,
+        x: (i % cols) * CELL_SIZE + (CELL_SIZE/2),
+        y: Math.floor(i / cols) * CELL_SIZE + (CELL_SIZE/2)
+      };
+    }
+  }
+
+  function resize() {
+    const parent = canvas.parentElement;
+    W = parent ? parent.clientWidth : window.innerWidth;
+    H = parent ? parent.clientHeight : window.innerHeight;
+    
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    
+    ctx.scale(dpr, dpr);
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center';
+    ctx.font = '12px "JetBrains Mono", monospace';
+    
+    initGrid();
+  }
+
+  let raf;
+  function draw() {
+    // Fill background solid
+    ctx.fillStyle = '#080808'; 
+    ctx.fillRect(0, 0, W, H);
+
+    // Smooth mouse interpolation (spring physics for spotlight)
+    mouse.x += (targetMouse.x - mouse.x) * 0.15;
+    mouse.y += (targetMouse.y - mouse.y) * 0.15;
+    
+    const now = performance.now();
+    
+    // Config values
+    const lightRadius = 250;
+    
+    for (let i = 0; i < cells.length; i++) {
+      const cell = cells[i];
+      
+      const dx = mouse.x - cell.x;
+      const dy = mouse.y - cell.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      
+      let opacity = 0.04; // base opacity
+      let displayChar = cell.char;
+      
+      if (dist < lightRadius) {
+        // Boost opacity near cursor
+        const intensity = 1 - (dist / lightRadius);
+        // ease in out quad
+        const ease = intensity < 0.5 ? 2 * intensity * intensity : 1 - Math.pow(-2 * intensity + 2, 2) / 2;
+        
+        opacity = 0.04 + (ease * 0.75); // peaks at ~0.8
+        
+        // Randomly glitch character when illuminated heavily
+        if (intensity > 0.4 && Math.random() < 0.02 && cell.glitchTime < now) {
+           displayChar = chars[Math.floor(Math.random() * chars.length)];
+           cell.glitchTime = now + (200 + Math.random() * 500); // Wait bit before glitching again
+        }
+      }
+      
+      // Override if actively glitching
+      if (cell.glitchTime > now) {
+         ctx.fillStyle = `rgba(59, 130, 246, ${Math.max(opacity, 0.4)})`; // Blue glitch
+      } else {
+         ctx.fillStyle = `rgba(148, 163, 184, ${opacity})`; // Default slate
+      }
+      
+      ctx.fillText(displayChar, cell.x, cell.y);
+    }
+    
+    // Draw an actual radial gradient "glow" on top
+    if (mouse.x > -100 && mouse.y > -100) {
+      const g = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, lightRadius);
+      g.addColorStop(0, 'rgba(59, 130, 246, 0.08)');
+      g.addColorStop(1, 'rgba(59, 130, 246, 0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(mouse.x - lightRadius, mouse.y - lightRadius, lightRadius * 2, lightRadius * 2);
+    }
+
+    raf = requestAnimationFrame(draw);
+  }
+
+  // Events
+  const section = canvas.parentElement;
+  
+  let lastClientX = -999;
+  let lastClientY = -999;
+
+  function updateMouse(e) {
+    if (e && e.clientX !== undefined) {
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+    }
+    const rect = section ? section.getBoundingClientRect() : {left: 0, top: 0};
+    targetMouse.x = lastClientX - rect.left;
+    targetMouse.y = lastClientY - rect.top;
+  }
+  
+  if (section) {
+    section.addEventListener('mousemove', updateMouse, {passive:true});
+    section.addEventListener('mouseleave', () => { 
+      lastClientX = -999; lastClientY = -999; 
+      targetMouse.x = -999; targetMouse.y = -999; 
+    }, {passive:true});
+  } else {
+    document.addEventListener('mousemove', updateMouse, {passive:true});
+  }
+
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 200);
+  }, {passive:true});
+
+  window.addEventListener('scroll', () => {
+    if (lastClientX !== -999) updateMouse();
+  }, {passive:true});
+
+  // Init
+  resize();
+  draw();
+  
+  // Cleanup
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) { cancelAnimationFrame(raf); } 
+    else { raf = requestAnimationFrame(draw); }
+  });
+})();
+</script>

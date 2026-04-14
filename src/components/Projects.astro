@@ -1,0 +1,255 @@
+---
+// Projects.astro — Terminal-window project cards. Very different from startup cards.
+// Velaris: "Founding Engineer" · Comecho: "IN DEVELOPMENT"
+
+const PROJECTS = [
+  {
+    id:       'velaris',
+    name:     'VELARIS',
+    path:     '~/prod/velaris',
+    role:     'Founding Engineer',
+    tagline:  'Web Engineering Studio — SSG · Edge · Performance',
+    desc:     'A high-performance web engineering studio built on Astro\'s zero-JS-by-default architecture. Served globally via Cloudflare\'s edge network. The entire stack is optimized for maximum Core Web Vital scores, treating performance as a first-class engineering constraint rather than an afterthought.',
+    url:      'https://velaris-web.pages.dev/',
+    status:   'PRODUCTION',
+    statusBadge: 'badge-green',
+    tags:     ['Astro', 'Cloudflare Pages', 'Tailwind CSS', 'Canvas API', 'TypeScript'],
+    metrics:  [
+      { key: 'Lighthouse Score',    val: '100 / 100'             },
+      { key: 'Architecture',        val: 'SSG · Zero JS default' },
+      { key: 'CDN',                 val: 'Cloudflare Edge'       },
+      { key: 'Time to Interactive', val: '< 0.5s'                },
+    ],
+    accentColor: '#3b82f6',
+    dotColors:   ['#ef4444', '#f59e0b', '#22c55e'],
+  },
+  {
+    id:       'comecho',
+    name:     'COMECHO',
+    path:     '~/dev/comecho',
+    role:     'Sole Engineer',
+    tagline:  'High-Performance Discord Alternative — Built in Rust',
+    desc:     'A next-generation real-time communication platform proving that social-scale software need not sacrifice safety for speed. Comecho\'s Rust backend leverages the ownership model for memory-safe concurrency, zero-cost abstractions, and sub-millisecond message latency — without a garbage collector.',
+    url:      null,
+    status:   'IN DEVELOPMENT',
+    statusBadge: 'badge-amber',
+    tags:     ['Rust', 'Dioxus', 'WebSockets', 'Tauri', 'Async I/O'],
+    metrics:  [
+      { key: 'Backend Language',   val: 'Rust (memory-safe)'        },
+      { key: 'Architecture',       val: 'Zero-cost abstractions'     },
+      { key: 'Concurrency model',  val: 'Ownership + Borrow checker' },
+      { key: 'Latency target',     val: 'Sub-millisecond'            },
+    ],
+    accentColor: '#f59e0b',
+    dotColors:   ['#ef4444', '#f59e0b', '#475569'],
+  },
+];
+---
+
+<section
+  id="projects"
+  aria-labelledby="projects-heading"
+  style="padding: 6rem 0 7rem; background: var(--bg);"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;">
+
+    <!-- Section header -->
+    <div data-reveal style="margin-bottom: 3.5rem;">
+      <p class="section-label" style="margin-bottom: 1rem;">Projects</p>
+      <h2
+        id="projects-heading"
+        style="
+          font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+          font-weight: 800;
+          letter-spacing: -0.04em;
+          color: #e2e8f0;
+          margin-bottom: 0.5rem;
+        "
+      >
+        Shipped Work
+      </h2>
+      <p style="color: #475569; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+        // production systems · real constraints · measurable outcomes
+      </p>
+    </div>
+
+    <!-- Project cards -->
+    <div style="display: flex; flex-direction: column; gap: 1px;">
+      {PROJECTS.map((project, idx) => (
+        <article
+          data-reveal
+          data-delay={String(idx * 120)}
+          class="project-card"
+          id={`project-${project.id}`}
+          aria-label={`${project.name} project`}
+        >
+
+          <!-- Window chrome header -->
+          <div class="panel-header">
+            <span class="panel-dot" style={`background: ${project.dotColors[0]};`} aria-hidden="true"></span>
+            <span class="panel-dot" style={`background: ${project.dotColors[1]};`} aria-hidden="true"></span>
+            <span class="panel-dot" style={`background: ${project.dotColors[2]};`} aria-hidden="true"></span>
+            <span class="panel-title" style="margin-left: 0.25rem;">
+              {project.path}
+            </span>
+            <span class={`badge ${project.statusBadge}`}>{project.status}</span>
+          </div>
+
+          <!-- Card body -->
+          <div style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+          " class="project-body">
+
+            <!-- Left: main content -->
+            <div style="
+              padding: 2rem 2rem 2rem 2rem;
+              border-right: 1px solid rgba(255,255,255,0.06);
+              display: flex;
+              flex-direction: column;
+              gap: 1.25rem;
+            ">
+              <!-- Title + role -->
+              <div>
+                <div style="display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                  <h3 style={`
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    letter-spacing: -0.03em;
+                    color: ${project.accentColor};
+                  `}>{project.name}</h3>
+                  <span style={`
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.65rem;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    text-transform: uppercase;
+                    color: ${project.accentColor};
+                    background: ${project.accentColor}15;
+                    border: 1px solid ${project.accentColor}30;
+                    padding: 0.2rem 0.6rem;
+                    border-radius: 2px;
+                  `}>{project.role}</span>
+                </div>
+                <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #334155; letter-spacing: 0.03em;">
+                  {project.tagline}
+                </p>
+              </div>
+
+              <!-- Description -->
+              <p style="font-size: 0.9375rem; color: #64748b; line-height: 1.75; font-weight: 400;">
+                {project.desc}
+              </p>
+
+              <!-- Tags -->
+              <div style="display: flex; flex-wrap: wrap; gap: 0.375rem;">
+                {project.tags.map(tag => (
+                  <span style="
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.7rem;
+                    color: #475569;
+                    background: rgba(255,255,255,0.03);
+                    border: 1px solid rgba(255,255,255,0.07);
+                    padding: 0.2rem 0.5rem;
+                    border-radius: 2px;
+                  ">{tag}</span>
+                ))}
+              </div>
+
+              <!-- CTA -->
+              <div style="margin-top: 0.25rem;">
+                {project.url ? (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-primary"
+                    id={`${project.id}-visit-btn`}
+                    aria-label={`Visit ${project.name} live site`}
+                    style="width: fit-content;"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                    </svg>
+                    visit_live_site()
+                  </a>
+                ) : (
+                  <span
+                    class="btn btn-ghost"
+                    style="cursor: not-allowed; opacity: 0.45; width: fit-content; display: inline-flex;"
+                    aria-label={`${project.name} is in active development`}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    in_development()
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <!-- Right: technical metrics (git log style) -->
+            <div style="
+              padding: 2rem;
+              background: rgba(255,255,255,0.01);
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              gap: 1.25rem;
+            ">
+              <p style="
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.6rem;
+                color: #334155;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                margin-bottom: 0.25rem;
+              ">Technical Metrics</p>
+
+              {project.metrics.map(m => (
+                <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.625rem; color: #334155; text-transform: uppercase; letter-spacing: 0.1em;">
+                    {m.key}
+                  </span>
+                  <span style={`
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    color: ${project.accentColor};
+                  `}>
+                    <span style="color: #1e293b; margin-right: 0.375rem;">→</span>{m.val}
+                  </span>
+                </div>
+              ))}
+
+              <div style={`height: 1px; background: linear-gradient(to right, ${project.accentColor}20, transparent); margin-top: 0.5rem;`} aria-hidden="true"></div>
+
+              <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #1e293b; line-height: 1.7; font-style: italic;">
+                {project.url
+                  ? '// serving production traffic from Cloudflare\'s global edge network'
+                  : '// architecture finalized · core modules under active construction'
+                }
+              </p>
+            </div>
+
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  @media (max-width: 768px) {
+    .project-body {
+      grid-template-columns: 1fr !important;
+    }
+    .project-body > div:first-child {
+      border-right: none !important;
+      border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    }
+  }
+</style>

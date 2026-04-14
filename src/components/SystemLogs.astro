@@ -1,0 +1,136 @@
+---
+// SystemLogs.astro — Dynamic continuous integration feed
+---
+
+<section
+  id="system-logs"
+  aria-label="System Logs"
+  style="
+    background: var(--bg);
+    padding: 0 0 5rem;
+    position: relative;
+    border-top: 1px solid rgba(255,255,255,0.02);
+  "
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;">
+    
+    <div style="margin-bottom: 2rem;">
+      <p class="section-label" style="margin-bottom: 0.5rem;">Live Telemetry</p>
+      <h2 style="font-size: clamp(1.25rem, 2.5vw, 1.75rem); font-weight: 800; color: #e2e8f0; letter-spacing: -0.02em;">System Monitor</h2>
+    </div>
+
+    <div
+      data-reveal
+      class="panel"
+      style="
+        padding: 0;
+        background: rgba(10,10,10,0.8);
+        border: 1px solid rgba(255,255,255,0.06);
+        width: 100%;
+      "
+    >
+      <div class="panel-header" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+        <span class="panel-dot" style="background: #ef4444;" aria-hidden="true"></span>
+        <span class="panel-dot" style="background: #f59e0b;" aria-hidden="true"></span>
+        <span class="panel-dot" style="background: #22c55e;" aria-hidden="true"></span>
+        <span class="panel-title" style="margin-left: 0.25rem;">/var/log/development.log</span>
+      </div>
+
+      <div style="
+        padding: 1.5rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.75rem;
+        line-height: 1.8;
+        color: #64748b;
+        height: 240px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      " class="terminal-logs" id="terminal-logs-container">
+        <!-- JS injects nodes here -->
+        <div id="terminal-cursor-line" style="margin-top: auto; display: flex; align-items: center; gap: 0.75rem; transition: opacity 0.2s;">
+          <span style="color: #22c55e;">brayan@portfolio:~$</span>
+          <span class="cursor-blink" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .terminal-logs::-webkit-scrollbar {
+    width: 6px;
+  }
+  .terminal-logs::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .terminal-logs::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+  }
+  .log-entry {
+    animation: reveal-up 0.3s ease forwards;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+<script is:inline>
+(function() {
+  const container = document.getElementById('terminal-logs-container');
+  const cursorLine = document.getElementById('terminal-cursor-line');
+  if (!container || !cursorLine) return;
+
+  const MOCK_MESSAGES = [
+    { tag: 'deploy', color: '#a78bfa', msg: 'cloudflare pages deployment successful (102ms)' },
+    { tag: 'test', color: '#3b82f6', msg: 'cargo test --release --all-features (pass)' },
+    { tag: 'info', color: '#94a3b8', msg: 'optimizing wasm binary footprint...' },
+    { tag: 'build', color: '#22c55e', msg: 'Astro SSG static routes generated gracefully' },
+    { tag: 'sec', color: '#f59e0b', msg: 'Strict-Transport-Security preload flag verified' },
+    { tag: 'kernel', color: '#ef4444', msg: 'OOM killer invoked on redundant chron process (safely isolated)' },
+    { tag: 'network', color: '#3b82f6', msg: 'handshake established via wss://edge.comecho.dev' }
+  ];
+
+  function addLog() {
+    const randomMsg = MOCK_MESSAGES[Math.floor(Math.random() * MOCK_MESSAGES.length)];
+    const logEl = document.createElement('div');
+    logEl.className = 'log-entry';
+    
+    // Add timestamp
+    const now = new Date();
+    const ts = now.toISOString().split('T')[1].substring(0, 8);
+
+    logEl.innerHTML = `
+      <span style="color: #3b82f6; flex-shrink: 0;">»</span>
+      <span style="color: #475569;">[${ts}]</span>
+      <span style="word-break: break-all;">
+        <span style="color: ${randomMsg.color};">[${randomMsg.tag}]</span> ${randomMsg.msg}
+      </span>
+    `;
+
+    // Insert before cursor
+    container.insertBefore(logEl, cursorLine);
+    
+    // Keep only last 20 logs to prevent DOM bloat
+    const entries = container.querySelectorAll('.log-entry');
+    if (entries.length > 20) {
+      entries[0].remove();
+    }
+
+    // Auto-scroll to bottom
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // Add initial logs
+  for (let i=0; i<4; i++) { addLog(); }
+
+  // Simulate ongoing process
+  setInterval(() => {
+    if (Math.random() > 0.3) {
+      addLog();
+    }
+  }, 1800);
+})();
+</script>

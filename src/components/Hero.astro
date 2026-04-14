@@ -1,0 +1,350 @@
+---
+// Hero.astro — Two-column dashboard hero with photo frame
+// Photo: public/images/selfie.jpg
+import GridBackground from './GridBackground.astro';
+---
+
+<section
+  id="hero"
+  aria-label="Introduction"
+  style="
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 5rem 0 4rem;
+    background: var(--bg);
+  "
+>
+  <!-- Interactive Matrix Grid background -->
+  <GridBackground />
+
+  <!-- Subtle accent glow -->
+  <div aria-hidden="true" style="
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+  "></div>
+
+  <div style="
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4rem;
+    align-items: center;
+  " id="hero-grid">
+
+    <!-- LEFT: Terminal content block -->
+    <div>
+
+      <!-- System status line -->
+      <div data-reveal data-delay="0" style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem;">
+        <span class="badge badge-green">
+          <span style="
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: pulse-dot 2.5s ease-in-out infinite;
+            display: inline-block;
+          " aria-hidden="true"></span>
+          ONLINE
+        </span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: #1e293b;">
+          sys::uptime — available for engineering roles
+        </span>
+      </div>
+
+      <!-- whoami output -->
+      <div data-reveal data-delay="80" style="margin-bottom: 0.5rem;">
+        <div class="prompt" style="font-size: 0.8rem; color: #475569; margin-bottom: 0.75rem;">
+          <span style="color: #94a3b8; font-size: 0.8rem;">whoami</span>
+        </div>
+      </div>
+
+      <!-- Name -->
+      <h1
+        data-reveal data-delay="140"
+        style="
+          font-size: clamp(3rem, 7vw, 5.5rem);
+          font-weight: 800;
+          letter-spacing: -0.04em;
+          line-height: 1.0;
+          color: #e2e8f0;
+          margin-bottom: 0.75rem;
+        "
+      >
+        Brayan<br />
+        <span style="
+          background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        ">Suárez<br />Ceballos</span>
+      </h1>
+
+      <!-- Role -->
+      <p
+        data-reveal data-delay="200"
+        style="
+          font-family: 'JetBrains Mono', monospace;
+          font-size: clamp(0.85rem, 1.5vw, 1rem);
+          color: #64748b;
+          letter-spacing: 0.04em;
+          margin-bottom: 2rem;
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        "
+      >
+        System Engineer &amp; Computing Student
+        <span style="color: #3b82f6; font-weight: 700;">@ UTP</span>
+        <span style="width: 1px; height: 1em; background: rgba(255,255,255,0.12);" aria-hidden="true"></span>
+        <span>Pereira, Colombia</span>
+      </p>
+
+      <!-- Mission -->
+      <p
+        data-reveal data-delay="260"
+        style="
+          font-size: 1.125rem;
+          color: #94a3b8;
+          line-height: 1.75;
+          max-width: 48ch;
+          margin-bottom: 2.5rem;
+          font-weight: 400;
+        "
+      >
+        Leveraging modern tech to build
+        <strong style="color: #e2e8f0; font-weight: 600;">high-performance software</strong>
+        with a focus on
+        <strong style="color: #e2e8f0; font-weight: 600;">resource optimization</strong>.
+        Designing systems where speed and reliability are foundational constraints.
+      </p>
+
+      <!-- CTA row -->
+      <div data-reveal data-delay="320" style="display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center;">
+        <a href="#projects" class="btn btn-primary" id="hero-projects-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          view_projects()
+        </a>
+        <a href="#contact" class="btn btn-ghost" id="hero-contact-btn">
+          get_in_touch()
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Inline stats row -->
+      <div
+        data-reveal data-delay="400"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 1.5rem;
+          margin-top: 3rem;
+          padding-top: 2rem;
+          border-top: 1px solid rgba(255,255,255,0.06);
+          flex-wrap: wrap;
+        "
+      >
+        {[
+          { val: '15+',  key: 'languages'  },
+          { val: '20+',  key: 'frameworks' },
+          { val: '100',  key: 'lighthouse' },
+          { val: 'Edge', key: 'delivery'   },
+        ].map(({ val, key }) => (
+          <div style="display: flex; flex-direction: column; gap: 0.2rem;">
+            <span style="
+              font-family: 'JetBrains Mono', monospace;
+              font-size: 1.375rem;
+              font-weight: 700;
+              color: #3b82f6;
+              line-height: 1;
+            ">{val}</span>
+            <span style="
+              font-family: 'JetBrains Mono', monospace;
+              font-size: 0.65rem;
+              color: #334155;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+            ">{key}</span>
+          </div>
+        ))}
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Photo with technical frame -->
+    <div data-reveal data-delay="200" id="hero-photo-col">
+      <div
+        class="photo-frame"
+        style="
+          width: clamp(240px, 28vw, 340px);
+          aspect-ratio: 3/4;
+          position: relative;
+        "
+        aria-hidden="true"
+      >
+        <!-- Scan-line overlay -->
+        <div style="
+          position: absolute;
+          inset: 0;
+          background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(0,0,0,0.08) 3px,
+            rgba(0,0,0,0.08) 4px
+          );
+          z-index: 1;
+          pointer-events: none;
+        "></div>
+
+        <!-- Photo -->
+        <img
+          src="/images/selfie.jpg"
+          alt="Brayan Suárez Ceballos"
+          id="avatar-img"
+          style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+          "
+          onerror="document.getElementById('avatar-img').style.display='none'; document.getElementById('avatar-fallback').style.display='flex';"
+        />
+
+        <!-- Fallback if no photo -->
+        <div
+          id="avatar-fallback"
+          style="
+            display: none;
+            position: absolute;
+            inset: 0;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #0f0f0f 0%, #141414 100%);
+          "
+        >
+          <span style="
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.05em;
+          ">BSC</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: #1e293b; letter-spacing: 0.15em;">
+            // add photo to<br />// public/images/avatar.webp
+          </span>
+        </div>
+
+        <!-- Corner bracket: top-right -->
+        <div aria-hidden="true" style="
+          position: absolute;
+          top: 10px; right: 10px;
+          width: 20px; height: 20px;
+          border-top: 2px solid #8b5cf6;
+          border-right: 2px solid #8b5cf6;
+          z-index: 2;
+        "></div>
+        <!-- Corner bracket: bottom-left -->
+        <div aria-hidden="true" style="
+          position: absolute;
+          bottom: 10px; left: 10px;
+          width: 20px; height: 20px;
+          border-bottom: 2px solid #3b82f6;
+          border-left: 2px solid #3b82f6;
+          z-index: 2;
+        "></div>
+
+        <!-- Status label -->
+        <div style="
+          position: absolute;
+          bottom: 0; left: 0; right: 0;
+          padding: 2rem 1rem 0.75rem;
+          background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+          z-index: 2;
+        ">
+          <span style="
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: #64748b;
+            letter-spacing: 0.1em;
+          ">UTP · Colombia · 2026</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom gradient fade into next section -->
+  <div aria-hidden="true" style="
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--bg));
+    pointer-events: none;
+    z-index: 1;
+  "></div>
+
+  <!-- Scroll down indicator -->
+  <a href="#about" aria-label="Scroll down" style="
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    color: #64748b;
+    animation: bounce-subtle 2s infinite ease-in-out;
+    transition: color 0.2s;
+  " class="hover:text-blue-500">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+  </a>
+</section>
+
+<style>
+  @keyframes bounce-subtle {
+    0%, 100% { transform: translate(-50%, 0); }
+    50% { transform: translate(-50%, 8px); }
+  }
+  /* Stack on mobile */
+  @media (max-width: 768px) {
+    #hero-grid {
+      grid-template-columns: 1fr !important;
+      gap: 2.5rem !important;
+    }
+    #hero-photo-col {
+      order: -1;
+      display: flex;
+      justify-content: center;
+    }
+    #hero-photo-col > div {
+      width: 200px !important;
+      aspect-ratio: 1/1 !important;
+    }
+  }
+</style>

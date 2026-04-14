@@ -1,0 +1,210 @@
+---
+// ParticleCanvas.astro
+// High-performance Canvas particle background with mouse gravity pull.
+// Pure vanilla JS — zero framework overhead. z-index: 0, pointer-events: none.
+---
+
+<canvas
+  id="particle-canvas"
+  aria-hidden="true"
+  style="
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  "
+></canvas>
+
+<script is:inline>
+(function () {
+  'use strict';
+
+  var canvas  = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  var ctx     = canvas.getContext('2d');
+  var W       = 0;
+  var H       = 0;
+  var dpr     = Math.min(window.devicePixelRatio || 1, 2); // cap at 2x for perf
+  var mouse   = { x: -9999, y: -9999 };
+  var rafId   = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Config ─────────────────────────────────────── */
+  var CONFIG = {
+    count:        reduced ? 40 : 110,
+    maxRadius:    2.2,
+    minRadius:    0.6,
+    speed:        reduced ? 0.0 : 0.35,
+    connectDist:  140,
+    gravitDist:   200,
+    gravitStr:    0.012,   // strength of mouse attraction
+    baseOpacity:  0.45,
+    lineOpacity:  0.12,
+    colorBlue:    '59, 130, 246',   // #3b82f6
+    colorViolet:  '139, 92, 246',   // #8b5cf6
+  };
+
+  /* ── Particle class ──────────────────────────────── */
+  function Particle() {
+    this.reset();
+  }
+  Particle.prototype.reset = function () {
+    this.x   = Math.random() * W;
+    this.y   = Math.random() * H;
+    this.vx  = (Math.random() - 0.5) * CONFIG.speed * 2;
+    this.vy  = (Math.random() - 0.5) * CONFIG.speed * 2;
+    this.r   = CONFIG.minRadius + Math.random() * (CONFIG.maxRadius - CONFIG.minRadius);
+    this.op  = 0.2 + Math.random() * CONFIG.baseOpacity;
+    // alternate color: ~30% violet, rest blue
+    this.col = Math.random() < 0.3 ? CONFIG.colorViolet : CONFIG.colorBlue;
+  };
+
+  Particle.prototype.update = function () {
+    /* Gravity pull toward mouse */
+    var dx = mouse.x - this.x;
+    var dy = mouse.y - this.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < CONFIG.gravitDist && dist > 0.1) {
+      var force = (1 - dist / CONFIG.gravitDist) * CONFIG.gravitStr;
+      this.vx += (dx / dist) * force;
+      this.vy += (dy / dist) * force;
+    }
+
+    /* Dampen velocity so particles don't fly away */
+    this.vx *= 0.98;
+    this.vy *= 0.98;
+
+    this.x += this.vx;
+    this.y += this.vy;
+
+    /* Wrap edges */
+    if (this.x < -10) this.x = W + 10;
+    if (this.x > W + 10) this.x = -10;
+    if (this.y < -10) this.y = H + 10;
+    if (this.y > H + 10) this.y = -10;
+  };
+
+  var particles = [];
+
+  /* ── Setup ───────────────────────────────────────── */
+  function resize() {
+    var rect = canvas.parentElement
+      ? canvas.parentElement.getBoundingClientRect()
+      : { width: window.innerWidth, height: window.innerHeight };
+    W = rect.width  || window.innerWidth;
+    H = rect.height || window.innerHeight;
+
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    /* Re-seed particles on resize */
+    particles = [];
+    for (var i = 0; i < CONFIG.count; i++) {
+      particles.push(new Particle());
+    }
+  }
+
+  /* ── Draw ────────────────────────────────────────── */
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    /* Update + draw particles */
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.update();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.col + ', ' + p.op + ')';
+      ctx.fill();
+    }
+
+    /* Draw connecting lines between nearby particles */
+    for (var i = 0; i < particles.length; i++) {
+      for (var j = i + 1; j < particles.length; j++) {
+        var a = particles[i];
+        var b = particles[j];
+        var dx = a.x - b.x;
+        var dy = a.y - b.y;
+        var d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < CONFIG.connectDist) {
+          var alpha = (1 - d / CONFIG.connectDist) * CONFIG.lineOpacity;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          // blend between the two particles' colors
+          ctx.strokeStyle = 'rgba(' + a.col + ', ' + alpha + ')';
+          ctx.lineWidth   = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    /* Draw line from each particle to mouse if close */
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      var dx = p.x - mouse.x;
+      var dy = p.y - mouse.y;
+      var d  = Math.sqrt(dx * dx + dy * dy);
+      if (d < CONFIG.gravitDist) {
+        var alpha = (1 - d / CONFIG.gravitDist) * 0.25;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = 'rgba(59, 130, 246, ' + alpha + ')';
+        ctx.lineWidth   = 0.5;
+        ctx.stroke();
+      }
+    }
+
+    rafId = requestAnimationFrame(draw);
+  }
+
+  /* ── Events ──────────────────────────────────────── */
+  var section = canvas.parentElement;
+
+  function onMouseMove(e) {
+    var rect = section
+      ? section.getBoundingClientRect()
+      : { left: 0, top: 0 };
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  }
+
+  function onMouseLeave() {
+    mouse.x = -9999;
+    mouse.y = -9999;
+  }
+
+  if (section) {
+    section.addEventListener('mousemove', onMouseMove, { passive: true });
+    section.addEventListener('mouseleave', onMouseLeave, { passive: true });
+  } else {
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+  }
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  }, { passive: true });
+
+  /* ── Init ────────────────────────────────────────── */
+  resize();
+  draw();
+
+  /* ── Cleanup on page hide (Edge/Bfcache) ─────────── */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      cancelAnimationFrame(rafId);
+    } else {
+      rafId = requestAnimationFrame(draw);
+    }
+  });
+})();
+</script>

@@ -1,0 +1,231 @@
+---
+// About.astro — "Engineering DNA" section. Technical, authoritative tone.
+// In-Silico Research Group mentioned prominently.
+
+const DNA_TRAITS = [
+  {
+    key:  'logic',
+    val:  'Competitive Programming',
+    desc: 'Training at In-Silico (UTP). Focused on efficient data structures, complexity analysis, and solving algorithmic problems under constraints.',
+    color: '#3b82f6',
+  },
+  {
+    key:  'workflow',
+    val:  'Performance & Scalability',
+    desc: 'Building systems with a focus on low latency and resource optimization. I prioritize code that scales and performs predictably.',
+    color: '#8b5cf6',
+  },
+  {
+    key:  'integration',
+    val:  'End-to-End Development',
+    desc: 'Experience handling the full lifecycle of a project, from backend logic and system architecture to edge deployment and final UI.',
+    color: '#22c55e',
+  },
+  {
+    key:  'standards',
+    val:  'Reliable Infrastructure',
+    desc: 'Implementing secure patterns, data validation, and optimized deployment as the baseline for every project I build.',
+    color: '#f59e0b',
+  },
+];
+
+const TIMELINE = [
+  {
+    year:  '2024–Now',
+    title: 'Founder & Lead Engineer',
+    org:   'Velaris',
+    type:  'Entrepreneurship',
+    desc:  'Established a high-performance web engineering studio focused on zero-JS architectures and edge deployment. Architecting solutions where performance is treated as a foundational constraint, not an afterthought.',
+    color: '#10b981',
+    badge: 'badge-amber',
+  },
+  {
+    year:  '2024–Now',
+    title: 'Competitive Programmer',
+    org:   'In-Silico Research Group — UTP',
+    type:  'Research & Competition',
+    desc:  'Advanced algorithmic problem-solving under strict time and memory constraints. Segment trees, heavy-light decomposition, dynamic programming, graph theory. ICPC-style training sharpens decision-making under pressure — directly applicable to production engineering.',
+    color: '#3b82f6',
+    badge: 'badge-blue',
+  },
+  {
+    year:  '2023–Now',
+    title: 'B.Sc. System Engineering & Computing',
+    org:   'Universidad Tecnológica de Pereira (UTP)',
+    type:  'Education',
+    desc:  'Computing fundamentals: operating systems, data structures, networks, compilers, and concurrent programming. Bridging academic rigor with self-directed engineering practice.',
+    color: '#8b5cf6',
+    badge: 'badge-blue',
+  },
+];
+---
+
+<section
+  id="about"
+  aria-labelledby="about-heading"
+  style="padding: 6rem 0 7rem; background: var(--surface);"
+>
+  <div style="max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;">
+
+    <!-- Section header -->
+    <div data-reveal style="margin-bottom: 3.5rem;">
+      <p class="section-label" style="margin-bottom: 1rem;">Engineering DNA</p>
+      <h2
+        id="about-heading"
+        style="
+          font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+          font-weight: 800;
+          letter-spacing: -0.04em;
+          color: #e2e8f0;
+          margin-bottom: 0.5rem;
+        "
+      >
+        How I Think
+      </h2>
+      <p style="color: #475569; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;">
+        // principles · experience · formation
+      </p>
+    </div>
+
+    <!-- Two-column layout -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start;" id="about-grid">
+
+      <!-- Left: Bio + DNA traits -->
+      <div>
+        <!-- Short bio -->
+        <div
+          data-reveal
+          class="panel"
+          style="margin-bottom: 1rem; padding: 1.75rem;"
+        >
+          <div class="panel-header" style="margin: -1.75rem -1.75rem 1.5rem; border-radius: 0;">
+            <span class="panel-dot" style="background: #ef4444;" aria-hidden="true"></span>
+            <span class="panel-dot" style="background: #f59e0b;" aria-hidden="true"></span>
+            <span class="panel-dot" style="background: #22c55e;" aria-hidden="true"></span>
+            <span class="panel-title">bio.md</span>
+          </div>
+
+          <div class="prompt" style="margin-bottom: 0.5rem;">
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: #475569;">cat bio.md</span>
+          </div>
+
+          <p style="font-size: 0.9375rem; color: #94a3b8; line-height: 1.8; margin-bottom: 1rem;">
+            I am a Systems Engineering and Computing student at
+            <strong style="color: #3b82f6; font-weight: 600;">Universidad Tecnológica de Pereira</strong>, driven by a deep interest in low-level efficiency and software architecture.
+          </p>
+          <p style="font-size: 0.9375rem; color: #64748b; line-height: 1.8;">
+            My academic journey is complemented by an intensive focus on algorithmic problem-solving. As an active member of the 
+            <strong style="color: #3b82f6; font-weight: 600;">In-Silico Research Group</strong>, I dedicate my time to refining logical intuition and mastering complex data structures under high-pressure constraints.
+          </p>
+        </div>
+
+        <!-- DNA Traits -->
+        <div style="display: flex; flex-direction: column; gap: 1px;">
+          {DNA_TRAITS.map((trait, i) => (
+            <div
+              data-reveal
+              data-delay={String(i * 80)}
+              style={`
+                padding: 1.25rem 1.5rem;
+                background: var(--card);
+                border: 1px solid rgba(255,255,255,0.06);
+                transition: background 0.2s ease;
+                cursor: default;
+              `}
+              class="dna-row"
+            >
+              <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.375rem; flex-wrap: wrap;">
+                <span style={`
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 0.65rem;
+                  color: ${trait.color};
+                  font-weight: 600;
+                  letter-spacing: 0.06em;
+                `}>{trait.key}</span>
+                <span style={`
+                  font-family: 'JetBrains Mono', monospace;
+                  font-size: 0.65rem;
+                  color: ${trait.color};
+                  opacity: 0.6;
+                `}>= "{trait.val}"</span>
+              </div>
+              <p style="font-size: 0.875rem; color: #475569; line-height: 1.65;">{trait.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Right: Timeline -->
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        {TIMELINE.map((item, i) => (
+          <div
+            data-reveal
+            data-delay={String(i * 100)}
+            class="panel"
+          >
+            <div class="panel-header">
+              <span class="panel-dot" style="background: #ef4444;" aria-hidden="true"></span>
+              <span class="panel-dot" style="background: #f59e0b;" aria-hidden="true"></span>
+              <span class="panel-dot" style="background: #22c55e;" aria-hidden="true"></span>
+              <span class="panel-title">{item.year}</span>
+              <span class={`badge ${item.badge}`}>{item.type}</span>
+            </div>
+
+            <div style="padding: 1.5rem;">
+              <h3 style="
+                font-size: 1rem;
+                font-weight: 700;
+                color: #e2e8f0;
+                letter-spacing: -0.02em;
+                margin-bottom: 0.25rem;
+              ">{item.title}</h3>
+              <p style={`
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.75rem;
+                color: ${item.color};
+                font-weight: 600;
+                margin-bottom: 1rem;
+              `}>{item.org}</p>
+              <p style="font-size: 0.9rem; color: #64748b; line-height: 1.75;">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+
+        <!-- Location / availability card -->
+        <div
+          data-reveal
+          data-delay="200"
+          style="
+            padding: 1.25rem 1.5rem;
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+          "
+        >
+          <div>
+            <p style="font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #334155; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.375rem;">Current Status</p>
+            <p style="font-size: 0.9375rem; color: #94a3b8; font-weight: 500;">
+              Open to engineering roles · Remote &amp; International
+            </p>
+          </div>
+          <span class="badge badge-green">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #22c55e; display: inline-block;" aria-hidden="true"></span>
+            Available
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .dna-row:hover { background: var(--hover) !important; }
+  @media (max-width: 768px) {
+    #about-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
