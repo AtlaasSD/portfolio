@@ -37,6 +37,7 @@
 
     <!-- Desktop nav -->
     <nav
+      id="desktop-nav"
       role="navigation"
       aria-label="Main navigation"
       style="align-items: center; gap: 0.125rem;"
@@ -156,6 +157,13 @@
 <div style="height: 3.25rem;" aria-hidden="true"></div>
 
 <style>
+  #desktop-nav { display: none !important; }
+  
+  @media (min-width: 768px) {
+    #desktop-nav { display: flex !important; }
+    #mobile-nav-btn { display: none !important; }
+  }
+
   .nav-link:hover span:last-child { color: #e2e8f0 !important; }
   .nav-link:hover { background: rgba(255,255,255,0.04) !important; }
   .mobile-nav-link:hover span:last-child { color: #e2e8f0 !important; }
