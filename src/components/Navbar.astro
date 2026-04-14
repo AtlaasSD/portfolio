@@ -71,6 +71,8 @@
     <div style="display: flex; align-items: center; gap: 0.5rem;">
       <a
         href="mailto:brasuce1@gmail.com"
+        target="_blank"
+        rel="noopener noreferrer"
         class="btn btn-ghost hidden sm:inline-flex"
         style="padding: 0.375rem 0.875rem; font-size: 0.75rem;"
         aria-label="Email Brayan"
@@ -144,7 +146,7 @@
         </a>
       ))}
     </div>
-    <a href="mailto:brasuce1@gmail.com" class="btn btn-ghost" style="width: 100%; justify-content: center; font-size: 0.8rem;">
+    <a href="mailto:brasuce1@gmail.com" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" style="width: 100%; justify-content: center; font-size: 0.8rem;">
       brasuce1@gmail.com ↗
     </a>
   </div>
@@ -177,7 +179,7 @@
 
   btn.addEventListener('click', toggle);
   drawer.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () { if (open) toggle(); });
+    a.addEventListener('click', function () { if (open) setTimeout(toggle, 150); });
   });
 })();
 </script>
